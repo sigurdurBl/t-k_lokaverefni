@@ -3,3 +3,5 @@
 
 
 2. Fyrir hvað stendur skammstöfunin ROM? Útskýrðu hvað ROM er. = Read-only memory er tölvuminni sem tölva getur einungis lesið
+
+3. Hvað er fyrirbyggjandi viðhald? = koma í veg fyrir búnaður og vélar brotna niður
