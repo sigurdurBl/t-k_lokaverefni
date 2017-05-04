@@ -1,6 +1,7 @@
 #include <Servo.h> //using the servo library
 
 Servo myservo; // create an servo object
+int xPin = A1;
 int potient = A0;
 int potientValue = 0;
 int gradur =  0;  // hvaða gráður á ég að skrifa 
@@ -10,18 +11,40 @@ const int TrigPin = 2;//Trig attach to pin2
 const int EchoPin = 3;//Echo attach to pin3
 float cm; // fjöldi cm sem mældir eru
 int led = 4;
-
-
+int snua = 0;
+int snuningur = 0;
+int sw = 5;
+int xPosition = 0;
+int buttonState = 0;
 void setup() {
   Serial.begin(9600);
   myservo.attach(9); 
   pinMode(TrigPin,OUTPUT);
   pinMode(EchoPin,INPUT);
   pinMode(led,OUTPUT);
+  pinMode(sw, INPUT_PULLUP);
 
 }
 
 void loop() {
+  buttonState = digitalRead(sw);
+  xPosition = analogRead(xPin);
+  if(snuningur == 180){
+    snua = 1;
+    }else if(snuningur == 0){
+      snua = 0;
+      }
+      if(snua ==0){
+        snuningur++;
+        } else{
+          snuningur--;
+          }
+      myservo.write(snuningur);
+ //if(buttonState == 0){
+      //  snuningur = 0;
+  // } else{
+  //     snuningur = 180;
+//}
  
   digitalWrite(TrigPin,LOW);
   delayMicroseconds(2);
@@ -48,55 +71,14 @@ void loop() {
       digitalWrite(led,HIGH);
 
     }
- 
-
-
   
-  
-  
-  
+    
+  Serial.print("X: ");
+  Serial.print(xPosition);
+  Serial.print(" | Button: ");
+  Serial.print(buttonState);
   potientValue = analogRead(potient);
-  potientValue = map(potientValue, 0, 1023, 0, 180);     // scale it to use it with the servo (value between 0 and 180) 
-//  myservo.write(0);
-   // myservo.write(teljari);
-  //teljari++;
-   
-
-    for (int teljari = 0; teljari <= 180 ; teljari++){
-//        potientValue = analogRead(potient);
-//  potientValue = map(potientValue, 0, 1023, 0, 180);     // scale it to use it with the servo (value between 0 and 180) 
-//  myservo.write(0);
-    myservo.write(teljari);
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    delay(15);
-
-
-
-      
-
-}
-
-    for (int teljari = 180; teljari >= 0 ; teljari--){
-//        potientValue = analogRead(potient);
-//  potientValue = map(potientValue, 0, 1023, 0, 180);     // scale it to use it with the servo (value between 0 and 180) 
-//  myservo.write(0);
-    myservo.write(teljari);
-
-    delay(15);
-
-      
-
-}
+  potientValue = map(potientValue, 0, 1023, 0, 180);// scale it to use it with the servo (value between 0 and 180) 
 
 
 
