@@ -15,7 +15,9 @@ int snua = 0;
 int snuningur = 0;
 int sw = 5;
 int xPosition = 0;
+int takki = 0;
 int buttonState = 0;
+
 void setup() {
   Serial.begin(9600);
   myservo.attach(9); 
@@ -26,26 +28,44 @@ void setup() {
 
 }
 
+
+
+
+
 void loop() {
   buttonState = digitalRead(sw);
-  xPosition = analogRead(xPin);
-  if(snuningur == 180){
-    snua = 1;
-    }else if(snuningur == 0){
+  //xPosition = analogRead(xPin);
+  if(buttonState == 1) {
+    if(snuningur >= 180){
+      snua = 1;
+    }else if(snuningur <= 0){
       snua = 0;
-      }
-      if(snua ==0){
-        snuningur++;
-        } else{
-          snuningur--;
-          }
-      myservo.write(snuningur);
- //if(buttonState == 0){
-      //  snuningur = 0;
-  // } else{
-  //     snuningur = 180;
-//}
- 
+    }
+    if(snua == 0 && buttonState == 1){
+      snuningur++;
+    } else if (snua == 1 && buttonState == 1) {
+      snuningur--;
+    }
+  }
+  
+  /*if(buttonState == 0 && xPosition >= 1000){
+     snua = 0;
+  } else if(xPosition == 0){
+     snua = 1;
+  } */
+  
+  if(buttonState == 0) {
+    potientValue = analogRead(xPin);
+    //snuningur = map(potientValue, 0, 1023, 0, 180);// scale it to use it with the servo (value between 0 and 180) 
+    Serial.print("potient: ");
+    Serial.println(potientValue);
+    if(potientValue < 400 && snuningur >= 0) {
+      snuningur--;  
+    } else if (potientValue > 600 && snuningur <= 180) {
+      snuningur++;  
+    }
+  }
+
   digitalWrite(TrigPin,LOW);
   delayMicroseconds(2);
   digitalWrite(TrigPin,HIGH);
@@ -55,40 +75,25 @@ void loop() {
 
   cm = pulseIn(EchoPin,HIGH)/58.0;  
   cm = (int(cm * 100.0))/100.0;
-    if(cm < 0)
+  if(cm < 0)
   {
     cm = 0;
   }
-    Serial.println(cm);
-
+  Serial.println(cm);
     
-    
-    
-    
-    
-  if(cm <= 20)
-    {
-      digitalWrite(led,HIGH);
-
-    }
-  
+  if(cm <= 20) {
+    digitalWrite(led,HIGH);
+  } else {
+    digitalWrite(led,LOW);
+  }
     
   Serial.print("X: ");
   Serial.print(xPosition);
+  Serial.print("snuningur: ");
+  Serial.print(snuningur);
   Serial.print(" | Button: ");
-  Serial.print(buttonState);
-  potientValue = analogRead(potient);
-  potientValue = map(potientValue, 0, 1023, 0, 180);// scale it to use it with the servo (value between 0 and 180) 
-
-
-
-
-
-  
-  
- 
-
- 
-
-  ;//give the servomotor time to go to position 
+  Serial.println(buttonState);
+  myservo.write(snuningur);
+  delay(15);//give the servomotor time to go to position 
 }
+
